@@ -27539,7 +27539,7 @@ GameObject:
   - component: {fileID: 1576154611}
   - component: {fileID: 1576154614}
   m_Layer: 0
-  m_Name: sprite_0
+  m_Name: GG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
