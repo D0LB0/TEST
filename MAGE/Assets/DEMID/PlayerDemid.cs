@@ -22,6 +22,8 @@ public class PlayerDemid : MonoBehaviour
     public Image[] hearts;
     public Sprite fullHeart;
     public Sprite emptyHeart;
+    public bool doubleJump = false;
+    public int JumpCount = 0;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>(); // Присваиваем rb Rigidbody2D
@@ -110,13 +112,23 @@ public class PlayerDemid : MonoBehaviour
     }
     void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGround)
+        if (doubleJump == true)
         {
-            rb.AddForce(transform.up * jumpHeight, ForceMode2D.Impulse);
-
+            if (Input.GetKeyDown(KeyCode.Space) && (JumpCount < 1))
+            {
+                rb.AddForce(transform.up * jumpHeight, ForceMode2D.Impulse);
+                JumpCount++;
+            }
         }
+        else
+        {
 
+            if (Input.GetKeyDown(KeyCode.Space) && isGround)
+            {
+                rb.AddForce(transform.up * jumpHeight, ForceMode2D.Impulse);
 
+            }
+        }
     }
     //Метод проверяющий на земле ли аздыбуркулдык
     void GroundCheck()
@@ -125,6 +137,8 @@ public class PlayerDemid : MonoBehaviour
         isGround = colliders.Length > 1;
         if (!isGround)
             anim.SetInteger("State", 3);
+
+        if (isGround) JumpCount = 0;
 
     }
 
@@ -177,6 +191,16 @@ public class PlayerDemid : MonoBehaviour
         yield return new WaitForSeconds(0.02f); //ожидание 0.02 секунды
         StartCoroutine(OnHit()); //Вызов текущей корутины
 
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+
+    {
+        if(collision.gameObject.tag == "DJPower")
+        {
+            Destroy(collision.gameObject);
+            doubleJump = true;
+        }
     }
 }
 
