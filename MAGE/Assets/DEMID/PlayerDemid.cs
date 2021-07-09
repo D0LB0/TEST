@@ -24,6 +24,7 @@ public class PlayerDemid : MonoBehaviour
     public Sprite emptyHeart;
     public bool doubleJump = false;
     public int JumpCount = 0;
+    public int levitationCount = 0;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>(); // Присваиваем rb Rigidbody2D
@@ -36,6 +37,7 @@ public class PlayerDemid : MonoBehaviour
     {
         Flip();
         Jump();
+        levitation();
         GroundCheck();
         if (Input.GetAxis("Horizontal") == 0 && isGround)
             anim.SetInteger("State", 1); // анимация спокойствия
@@ -202,5 +204,29 @@ public class PlayerDemid : MonoBehaviour
             doubleJump = true;
         }
     }
+
+    void levitation()
+    {
+        if (Input.GetKeyDown(KeyCode.V) && (levitationCount == 0))
+        {
+            rb.gravityScale = 0.001f;
+            levitationCount++;
+        }
+
+        else
+        {
+
+
+           if  (Input.GetKeyDown(KeyCode.V) && (levitationCount == 1))
+            {
+                rb.gravityScale = 1;
+                levitationCount--;
+            }
+
+        }
+        
+        
+    }
+
 }
 
