@@ -22,6 +22,11 @@ public class Player : MonoBehaviour
     public Image[] hearts;
     public Sprite fullHeart;
     public Sprite emptyHeart;
+
+    // Двойной прыжок
+    public bool doubleJump = false;
+    public int jumpCount = 0;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>(); // Присваиваем rb Rigidbody2D
@@ -110,13 +115,21 @@ public class Player : MonoBehaviour
     }
     void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGround)
+        if (doubleJump == true)
         {
-            rb.AddForce(transform.up * jumpHeight, ForceMode2D.Impulse);
-
+            if (Input.GetKeyDown(KeyCode.Space) && (jumpCount < 1))
+            {
+                rb.AddForce(transform.up * jumpHeight, ForceMode2D.Impulse);
+                jumpCount++;
+            }
         }
-
-
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.Space) && isGround)
+            {
+                rb.AddForce(transform.up * jumpHeight, ForceMode2D.Impulse);
+            }
+        }
     }
     //Метод проверяющий на земле ли аздыбуркулдык
     void GroundCheck()
@@ -126,6 +139,8 @@ public class Player : MonoBehaviour
         if (!isGround)
             anim.SetInteger("State", 3);
 
+        // Если мы на земле, то счетчик прыжков обнуляется
+        if (isGround) jumpCount = 0;
     }
 
     public void AddCoid(int count)
@@ -177,6 +192,16 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(0.02f); //ожидание 0.02 секунды
         StartCoroutine(OnHit()); //Вызов текущей корутины
 
+    }
+
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "DJPower")
+        {
+            Destroy(collision.gameObject);
+            doubleJump = true;
+        }
     }
 }
 
