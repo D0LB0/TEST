@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - DJPower
+  - LevitationPower
+  - LittlePower
   layers:
   - Default
   - TransparentFX

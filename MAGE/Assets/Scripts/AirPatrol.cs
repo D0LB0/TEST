@@ -9,6 +9,12 @@ public class AirPatrol : MonoBehaviour
     public float speed = 2f;//скороооооооотсь
     public float waitTime = 3f; //время ожидания
     bool canGo = true;//возможность двигаться
+    public bool rightSide = true;
+
+
+
+        
+
     void Start()
     {
         transform.position = new Vector3(point1.position.x, point1.position.y, transform.position.z);
@@ -17,7 +23,7 @@ public class AirPatrol : MonoBehaviour
     
     void Update()
     {
-        if (canGo)
+         if (canGo)
             transform.position = Vector3.MoveTowards(transform.position, point2.position, speed * Time.deltaTime);
         if (transform.position == point2.position)
         {
@@ -27,6 +33,10 @@ public class AirPatrol : MonoBehaviour
 
             canGo = false;
             StartCoroutine(Waiting());
+
+            if (rightSide == true) transform.rotation = Quaternion.Euler(0, 180, 0);
+            else transform.rotation = Quaternion.Euler(0,0,0);
+            rightSide = !rightSide;
         }
     }
 

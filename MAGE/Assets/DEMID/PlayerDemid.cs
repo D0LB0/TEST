@@ -22,14 +22,29 @@ public class PlayerDemid : MonoBehaviour
     public Image[] hearts;
     public Sprite fullHeart;
     public Sprite emptyHeart;
-    public bool doubleJump = false;
-    public int JumpCount = 0;
-    public int levitationCount = 0;
+
+    bool doubleJump = false;
+    int JumpCount = 0;
+    bool levitationAbility = false;
+    bool levitationEnable = false;
+    bool littleAbility = false;
+    bool littleEnable = false;
+
+
+    float normalScaleX, normalScaleY;
+
+    public AudioSource audioSource;
+
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>(); // Присваиваем rb Rigidbody2D
         anim = GetComponent<Animator>(); //Присваимаем anim  компонент Animator
         curHp = maxHp; //  В начале максимальное здоровье
+
+        normalScaleX = transform.localScale.x;
+        normalScaleY = transform.localScale.y;
     }
 
 
@@ -37,7 +52,8 @@ public class PlayerDemid : MonoBehaviour
     {
         Flip();
         Jump();
-        levitation();
+        Levitation();
+        Little();
         GroundCheck();
         if (Input.GetAxis("Horizontal") == 0 && isGround)
             anim.SetInteger("State", 1); // анимация спокойствия
@@ -114,6 +130,8 @@ public class PlayerDemid : MonoBehaviour
     }
     void Jump()
     {
+        audioSource.Play();
+
         if (doubleJump == true)
         {
             if (Input.GetKeyDown(KeyCode.Space) && (JumpCount < 1))
@@ -203,29 +221,55 @@ public class PlayerDemid : MonoBehaviour
             Destroy(collision.gameObject);
             doubleJump = true;
         }
+
+
+        if (collision.gameObject.tag == "LevitationPower")
+        {
+            Destroy(collision.gameObject);
+            levitationAbility = true;
+        }
+
+        if (collision.gameObject.tag == "LittlePower")
+        {
+            Destroy(collision.gameObject);
+            littleAbility = true;
+        }
+
     }
 
-    void levitation()
+    void Levitation()
     {
-        if (Input.GetKeyDown(KeyCode.V) && (levitationCount == 0))
+        if (Input.GetKeyDown(KeyCode.V) && levitationAbility && !levitationEnable)
         {
-            rb.gravityScale = 0.001f;
-            levitationCount++;
+            levitationEnable = true;
+            rb.gravityScale = 0.02f;
         }
 
-        else
-        {
-
-
-           if  (Input.GetKeyDown(KeyCode.V) && (levitationCount == 1))
+        else if (Input.GetKeyDown(KeyCode.V) && levitationAbility && levitationEnable)
             {
+            levitationEnable = false;
                 rb.gravityScale = 1;
-                levitationCount--;
             }
 
+
+
+    }
+
+
+    void Little()
+    {
+        if (Input.GetKeyDown(KeyCode.X) && littleAbility && !littleEnable)
+        {
+            littleEnable = true;
+            transform.localScale = new Vector3(normalScaleX / 2, normalScaleY / 2, transform.localScale.z);
         }
-        
-        
+
+        else if (Input.GetKeyDown(KeyCode.X) && littleAbility && littleEnable)
+        {
+            littleEnable = false;
+            transform.localScale = new Vector3(normalScaleX, normalScaleY, transform.localScale.z);
+        }
+
     }
 
 }
